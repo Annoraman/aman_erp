@@ -1,0 +1,42 @@
+# accounts/models/role.py
+
+from django.db import models
+from core.models.base import BaseModel
+from core.models.company import Company
+
+
+class Role(BaseModel):
+
+    company = models.ForeignKey(
+        Company,
+        on_delete=models.CASCADE,
+        related_name="roles"
+    )
+
+    name = models.CharField(max_length=150)
+    code = models.CharField(max_length=100)
+
+    description = models.TextField(blank=True)
+
+    is_system = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = "accounts_role"
+
+        ordering = ["name"]
+
+        constraints = [
+            models.UniqueConstraint(
+                fields=["company", "code"],
+                name="unique_role_code_per_company"
+            )
+        ]
+
+        indexes = [
+            models.Index(fields=["company", "code"]),
+            models.Index(fields=["company"]),
+            models.Index(fields=["is_active"]),
+        ]
+
+    def __str__(self):
+        return f"{self.name} ({self.company.name})"

@@ -1,0 +1,7 @@
+User = get_user_model()
+
+User.objects.create_superuser(
+    username="admin",
+    email="admin@gmail.com",
+    password="123"
+)
