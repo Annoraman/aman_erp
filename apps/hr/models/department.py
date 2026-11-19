@@ -1,10 +1,10 @@
 # apps/hr/models/department.py
 
 from django.db import models
-from core.models.base import BaseModel
+from core.models import CompanyAwareModel
 
 
-class Department(BaseModel):
+class Department(CompanyAwareModel):
     name = models.CharField(max_length=255)
 
     parent = models.ForeignKey(

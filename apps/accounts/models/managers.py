@@ -8,9 +8,10 @@ class UserManager(BaseUserManager):
         if not email:
             raise ValueError("User must have an email")
 
+        """
         if "company" not in extra_fields:
             raise ValueError("User must have a company")
-
+        """
         email = self.normalize_email(email)
 
         user = self.model(
@@ -27,7 +28,10 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault("is_superuser", True)
         extra_fields.setdefault("is_active", True)
 
+        """
         if extra_fields.get("company") is None:
             raise ValueError("Superuser must have a company")
+        """
 
         return self.create_user(email, password, **extra_fields)
+    

@@ -2,26 +2,27 @@
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from core.models.base import BaseModel
-from core.models.company import Company
-from core.models.branch import Branch
+from config import settings
 from .managers import UserManager
 from apps.accounts.cache.permission_cache import PermissionCache
 
 
-class User(AbstractUser, BaseModel):
+
+class User(AbstractUser):
 
     company = models.ForeignKey(
-        Company,
+        "core.Company",
+        null=True,
+        blank=True,
         on_delete=models.PROTECT,
         related_name="users"
     )
 
     default_branch = models.ForeignKey(
-        Branch,
+        "core.Branch",
         null=True,
         blank=True,
-        on_delete=models.SET_NULL,
+        on_delete=models.PROTECT,
         related_name="default_users"
     )
 
@@ -47,7 +48,22 @@ class User(AbstractUser, BaseModel):
     is_super_admin = models.BooleanField(
         default=False
         )
-
+    
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="%(class)s_created"
+    )
+    
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="%(class)s_updated"
+    )
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = [ ]
 

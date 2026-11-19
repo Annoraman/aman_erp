@@ -2,7 +2,7 @@
 
 from django.db import models
 from django.core.exceptions import ValidationError
-from core.models.base import BaseModel, CompanyAwareModel
+from core.models.base import  CompanyAwareModel
 from django.utils import timezone
 from django.db.models import Sum
 
@@ -32,6 +32,11 @@ class JournalEntry(CompanyAwareModel):
         on_delete=models.PROTECT,
         related_name="reversal_entry"
     )
+
+    amount = models.DecimalField(max_digits=20, decimal_places=2)
+    currency = models.ForeignKey("core.Currency", on_delete=models.PROTECT)
+
+    base_amount = models.DecimalField(max_digits=20, decimal_places=2)  # converted to base currency
 
     is_reversal = models.BooleanField(default=False)
 

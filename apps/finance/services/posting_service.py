@@ -1,11 +1,9 @@
 # apps/finance/services/posting_service.py
 
 from django.core.exceptions import PermissionDenied
-
 from apps.accounts.services.permission_service import PermissionService
 from apps.finance.models import JournalEntry
 from apps.finance.services.audit_service import AuditService
-
 
 
 class PostingService:

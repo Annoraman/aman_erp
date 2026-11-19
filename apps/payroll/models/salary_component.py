@@ -1,48 +1,45 @@
 # apps/payroll/models/salary_component.py
 
 from django.db import models
+from core.models.base import CompanyAwareModel
 
-from .salary_structure import SalaryStructure
+class SalaryComponent(CompanyAwareModel):
 
+    class Type(models.TextChoices):
+        EARNING = "EARNING"
+        DEDUCTION = "DEDUCTION"
 
-class SalaryComponent(models.Model):
-
-    ALLOWANCE = "ALLOWANCE"
-    DEDUCTION = "DEDUCTION"
-
-    TYPE_CHOICES = [
-        (ALLOWANCE, "Allowance"),
-        (DEDUCTION, "Deduction"),
-    ]
-
-    FIXED = "FIXED"
-    PERCENTAGE = "PERCENTAGE"
-
-    CALCULATION_TYPE_CHOICES = [
-        (FIXED, "Fixed"),
-        (PERCENTAGE, "Percentage"),
-    ]
+    # class CalcType(models.TextChoices):
+    #     FIXED = "FIXED"
+    #     PERCENTAGE = "PERCENTAGE"
+    #     CALCULATION = "CALCULATION"
 
     name = models.CharField(max_length=255)
-    component_type = models.CharField(max_length=20, choices=TYPE_CHOICES)
-    calculation_type = models.CharField(max_length=20, choices=CALCULATION_TYPE_CHOICES)
 
-    value = models.DecimalField(max_digits=10, decimal_places=2)
+    code = models.CharField(max_length=50, help_text="Example: BASIC, HRA, TAX")
 
-    # percentage based on what?
-    based_on_basic = models.BooleanField(default=True)
+    component_type = models.CharField(max_length=20, choices=Type.choices)
 
-    salary_structure = models.ForeignKey(
-        SalaryStructure,
-        related_name="components",
-        on_delete=models.CASCADE
-    )
+    # calculation_type = models.CharField(max_length=20, choices=CalcType.choices, default=CalcType.FIXED)
+
+    is_taxable = models.BooleanField(default=False)
+    is_pensionable = models.BooleanField(default=False)
+    is_insurable = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
 
     account = models.ForeignKey(
         "finance.Account",
         on_delete=models.PROTECT,
-        null=True,
-        blank=True
+        null=False,
+        blank=False
     )
+
+    class Meta:
+        unique_together = ("company", "code")
+        indexes = [
+            models.Index(fields=["company", "component_type", "is_active"]),
+            models.Index(fields=["company", "is_active"]),
+        ]
+
     def __str__(self):
-        return self.name
+        return f"{self.code} - {self.name}"

@@ -26,9 +26,6 @@ class Account(CompanyAwareModel):
     def __str__(self):
         return f"{self.code} - {self.name}"
 
-    def __str__(self):
-        return f"{self.code} - {self.name}"
-
     def clean(self):
         if self.parent and self.parent.company_id != self.company_id:
             raise ValidationError("Parent account must belong to same company")

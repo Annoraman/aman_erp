@@ -1,12 +1,12 @@
 # accounts/models/role_permission.py
 
 from django.db import models
-from core.models.base import BaseModel
+from core.models import CompanyAwareModel
 from .role import Role
 from .permission import Permission
 
 
-class RolePermission(BaseModel):
+class RolePermission(CompanyAwareModel):
 
     role = models.ForeignKey(
         Role,

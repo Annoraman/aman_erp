@@ -2,12 +2,12 @@
 
 from django.db import models
 from django.conf import settings
-from core.models.base import BaseModel, AuditModel
-from core.models.branch import Branch
+from core.models import CompanyAwareModel
+from core.models import Branch
 from .role import Role
 
 
-class UserRole(BaseModel, AuditModel):
+class UserRole(CompanyAwareModel):
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,

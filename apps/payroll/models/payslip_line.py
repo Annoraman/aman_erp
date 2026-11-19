@@ -1,34 +1,30 @@
 # apps/payroll/models/payslip_line.py
-
 from django.db import models
+from core.models.base import CompanyAwareModel
 
-
-class PayslipLine(models.Model):
-
-    ALLOWANCE = "ALLOWANCE"
-    DEDUCTION = "DEDUCTION"
-
-    TYPE_CHOICES = [
-        (ALLOWANCE, "Allowance"),
-        (DEDUCTION, "Deduction"),
-    ]
-
+class PayslipLine(CompanyAwareModel):
+    
     payslip = models.ForeignKey(
         "payroll.Payslip",
         related_name="lines",
         on_delete=models.CASCADE
     )
 
-    account = models.ForeignKey(
-    "finance.Account",
-    null=True,
-    blank=True,
-    on_delete=models.PROTECT
-    )
+    component_id = models.IntegerField()
+
     component_name = models.CharField(max_length=255)
-    component_type = models.CharField(max_length=20, choices=TYPE_CHOICES)
+    component_code = models.CharField(max_length=50)
+    component_type = models.CharField(max_length=50)
+    sequence = models.IntegerField(default=0)
 
     amount = models.DecimalField(max_digits=12, decimal_places=2)
-
-    def __str__(self):
-        return f"{self.component_name} - {self.amount}"
+    rule_version_id = models.IntegerField(blank=True, null=True)
+    formula_snapshot = models.TextField(blank=True, null=True)
+    condition_snapshot = models.TextField(blank=True, null=True)
+    class Meta:
+        ordering = ["id"]
+        indexes = [
+            models.Index(fields=["payslip"]),
+            models.Index(fields=["component_code"]),
+        ]
+        unique_together = ("payslip", "component_code")

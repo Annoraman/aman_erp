@@ -1,10 +1,10 @@
 # apps/payroll/models/payroll_run.py
 from django.db import models
-from core.models import BaseModel
+from core.models import CompanyAwareModel
 from .payroll_period import PayrollPeriod
 
-class PayrollRun(models.Model):
-    
+class PayrollRun(CompanyAwareModel):
+
     DRAFT = "DRAFT"
     REVIEW = "REVIEW"
     APPROVED = "APPROVED"
@@ -13,28 +13,36 @@ class PayrollRun(models.Model):
     STATUS_CHOICES = [
         (DRAFT, "Draft"),
         (REVIEW, "Review"),
-        (APPROVED, "Approved"),
+        (APPROVED, "Approved"), 
         (POSTED, "Posted"),
     ]
 
-    period = models.ForeignKey("payroll.PayrollPeriod", on_delete=models.CASCADE)
-
+    period = models.ForeignKey(PayrollPeriod, on_delete=models.CASCADE)
+    failure_reason = models.TextField(blank=True, null=True)
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
         default=DRAFT
     )
 
-    created_at = models.DateTimeField(auto_now_add=True)
+    generated_at = models.DateTimeField(auto_now_add=True)
+    notes = models.TextField(null=False, blank=False)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["period"], 
+                name="uq_payroll_run_period"
+                )
+        ]
     # 🔐 control fields
-    approved_by = models.ForeignKey(
-        "accounts.User",
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL
-    )
+    # approved_by = models.ForeignKey(
+    #     "accounts.User",
+    #     null=True,
+    #     blank=True,
+    #     on_delete=models.SET_NULL
+    # )
 
-    approved_at = models.DateTimeField(null=True, blank=True)
+    # approved_at = models.DateTimeField(null=True, blank=True)
 
-    posted_at = models.DateTimeField(null=True, blank=True)
+    # posted_at = models.DateTimeField(null=True, blank=True)

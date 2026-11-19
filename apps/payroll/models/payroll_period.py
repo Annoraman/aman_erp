@@ -3,6 +3,11 @@
 from django.db import models
 
 class PayrollPeriod(models.Model):
+    
     start_date = models.DateField()
     end_date = models.DateField()
     is_closed = models.BooleanField(default=False)
+    
+    def __str__(self):
+        return str(self.end_date)
+    

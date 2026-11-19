@@ -1,17 +1,10 @@
 # accounts/models/role.py
 
 from django.db import models
-from core.models.base import BaseModel
-from core.models.company import Company
+from core.models import CompanyAwareModel
 
 
-class Role(BaseModel):
-
-    company = models.ForeignKey(
-        Company,
-        on_delete=models.CASCADE,
-        related_name="roles"
-    )
+class Role(CompanyAwareModel):
 
     name = models.CharField(max_length=150)
     code = models.CharField(max_length=100)

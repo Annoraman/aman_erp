@@ -3,19 +3,14 @@
 from django.db import models
 from core.models.base import BaseModel, AuditModel
 from core.models.branch import Branch
-from core.models.company import Company
+from core.models import CompanyAwareModel
 
 
-class Permission(BaseModel, AuditModel):
+class Permission(CompanyAwareModel):
 
-    company = models.ForeignKey(
-        Company,
-        on_delete=models.CASCADE,
-        related_name="permissions"
-    )
 
     branch = models.ForeignKey(
-        Branch,
+        "core.Branch",
         on_delete=models.CASCADE,
         related_name="branch_permissions"
     )

@@ -1,14 +1,14 @@
-# apps/finance/models/payment.py
-from django.db import models 
+from django.db import models
+from core.models.base import CompanyAwareModel
+from core.models.currency import Currency
 
-class Payment(models.Model):
+
+class Payment(CompanyAwareModel):
 
     PAYMENT_TYPES = [
-        ("PAY", "Pay Vendor"),
+        ("PAY", "Pay Supplier"),
         ("RECEIVE", "Receive Customer"),
     ]
-
-    company = models.ForeignKey("core.Company", on_delete=models.CASCADE)
 
     payment_type = models.CharField(max_length=10, choices=PAYMENT_TYPES)
 
@@ -18,8 +18,8 @@ class Payment(models.Model):
 
     method = models.ForeignKey("finance.PaymentMethod", on_delete=models.PROTECT)
 
-    vendor = models.ForeignKey(
-        "finance.Vendor",
+    supplier = models.ForeignKey(
+        "purchases.Supplier",
         null=True,
         blank=True,
         on_delete=models.PROTECT
@@ -40,3 +40,8 @@ class Payment(models.Model):
         blank=True,
         on_delete=models.SET_NULL
     )
+
+    currency = models.ForeignKey(Currency, on_delete=models.PROTECT)
+
+    base_amount = models.DecimalField(max_digits=12, decimal_places=2)
+

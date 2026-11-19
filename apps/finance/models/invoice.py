@@ -1,6 +1,8 @@
 # apps/finance/models/invoice.py
 from django.db import models
 
+from core.models.currency import Currency
+
 class Invoice(models.Model):
 
     customer = models.ForeignKey("finance.Customer", on_delete=models.PROTECT)
@@ -19,3 +21,8 @@ class Invoice(models.Model):
         blank=True,
         on_delete=models.SET_NULL
     )
+
+    amount = models.DecimalField(...)
+    currency = models.ForeignKey(Currency)
+
+    base_amount = models.DecimalField(...)  # converted to base currency

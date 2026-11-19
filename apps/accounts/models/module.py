@@ -1,7 +1,7 @@
 #accounts\models\module.py
 
 from django.db import models
-from core.models.base import BaseModel
+from core.models import BaseModel
 
 
 class Module(BaseModel):

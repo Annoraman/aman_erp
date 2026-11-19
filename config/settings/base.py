@@ -10,8 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
-import os
-
 from pathlib import Path
 
 import environ
@@ -60,7 +58,7 @@ LOCAL_APPS = [
     'apps.payroll',
     'apps.inventory',
     'apps.sales',
-    'apps.purchasing',
+    'apps.purchase',
     "apps.finance.apps.FinanceConfig",
 ]
 

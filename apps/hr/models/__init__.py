@@ -2,5 +2,8 @@ from .employee import Employee
 from .job import Job
 from .department import Department
 from .contract import Contract
-
-
+from .attendance import Attendance
+from .leave_type import LeaveType
+from .leave_request import LeaveRequest
+from .job_grade import JobGrade
+from .grade_step import GradeStep

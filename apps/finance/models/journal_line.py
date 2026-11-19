@@ -1,6 +1,7 @@
 
 from django.db import models
 from core.models import BaseModel
+from core.models.currency import Currency
 from .journal_entry import JournalEntry
 from django.core.exceptions import ValidationError
 
@@ -32,6 +33,11 @@ class JournalLine(BaseModel):
 
     cost_center = models.ForeignKey("finance.CostCenter", null=True, blank=True, on_delete=models.SET_NULL)
 
+    amount = models.DecimalField(max_digits=20, decimal_places=2)
+    currency = models.ForeignKey("core.Currency", on_delete=models.PROTECT)
+
+    base_amount = models.DecimalField(max_digits=20, decimal_places=2)  # converted to base currency
+
     def __str__(self):
         return f"{self.account} | D:{self.debit} C:{self.credit}"
 
@@ -47,7 +53,7 @@ class JournalLine(BaseModel):
         super().save(*args, **kwargs)
 
     def clean(self):
-        
+
         # ❌ Prevent both debit & credit
         if self.debit > 0 and self.credit > 0:
             raise ValidationError("Line cannot have both debit and credit")

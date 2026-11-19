@@ -2,6 +2,7 @@
 
 from apps.finance.services.journal_service import JournalService
 from apps.finance.models import Account
+from apps.payroll.models import payslip
 
 class PayrollAccountingIntegration:
 
@@ -52,8 +53,8 @@ class PayrollAccountingIntegration:
         }
 
         return JournalService.create_journal(user, journal_data)
-        
-        journal_data = {
+
+    journal_data = {
         "date": payslip.date,
         "description": f"Payroll - {payslip.employee}",
         "company": payslip.company,
